@@ -1,0 +1,151 @@
+/* Fox Spring Tea - 站点样式 */
+
+:root {
+  --bg-color: #f7f5f0;
+  --card-bg: #ffffff;
+  --text-color: #333333;
+  --muted-color: #777777;
+  --accent-color: #8b5a2b;
+  --accent-hover: #6d4420;
+  --border-color: #e0dcd3;
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  line-height: 1.7;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+header {
+  text-align: center;
+  padding: 3rem 1rem 1.5rem;
+}
+
+header h1 {
+  font-size: 2.2rem;
+  color: var(--accent-color);
+  letter-spacing: 0.05em;
+}
+
+.subtitle {
+  color: var(--muted-color);
+  font-size: 1rem;
+  margin-top: 0.25rem;
+}
+
+main {
+  flex: 1;
+  max-width: 720px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 1rem 1.5rem 3rem;
+}
+
+.intro {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: var(--shadow);
+}
+
+.intro p {
+  color: #555;
+  font-size: 0.95rem;
+}
+
+.intro code {
+  background-color: #f0ece3;
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  font-family: Consolas, Monaco, monospace;
+  font-size: 0.85em;
+}
+
+.downloads {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow);
+}
+
+.downloads h2 {
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+  color: var(--accent-color);
+}
+
+.file-list {
+  list-style: none;
+}
+
+.file-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.9rem 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.file-list li:last-child {
+  border-bottom: none;
+}
+
+.file-list a {
+  color: var(--accent-color);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.file-list a:hover {
+  color: var(--accent-hover);
+  text-decoration: underline;
+}
+
+.file-list a::before {
+  content: "📊 ";
+}
+
+.file-meta {
+  color: var(--muted-color);
+  font-size: 0.85rem;
+  white-space: nowrap;
+  margin-left: 1rem;
+}
+
+footer {
+  text-align: center;
+  padding: 1.5rem;
+  color: var(--muted-color);
+  font-size: 0.85rem;
+}
+
+@media (max-width: 480px) {
+  header h1 {
+    font-size: 1.75rem;
+  }
+
+  .file-list li {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .file-meta {
+    margin-left: 0;
+    margin-top: 0.25rem;
+  }
+}

@@ -87,6 +87,70 @@ write_sales_workbook(
     rows_2,
 )
 
+# File 3: March data
+skus_3 = ["SKU001", "SKU002", "SKU003"]
+unit_prices_3 = {"SKU001": 170.1, "SKU002": 116.1, "SKU003": 2520.0}
+rows_3 = generate_sales_data(
+    datetime(2026, 3, 1), skus_3, platforms,
+    base_visits=90, base_orders=4, base_refund=10.0,
+    unit_prices=unit_prices_3,
+)
+write_sales_workbook(
+    r"C:\Users\13521\fox-spring-tea-website\files\sample-data-03.xlsx",
+    "销售数据",
+    headers,
+    rows_3,
+)
+
+# File 4: April data
+skus_4 = ["SKU004", "SKU005", "SKU006"]
+unit_prices_4 = {"SKU004": 210.5, "SKU005": 145.8, "SKU006": 3150.0}
+rows_4 = generate_sales_data(
+    datetime(2026, 4, 1), skus_4, platforms,
+    base_visits=110, base_orders=5, base_refund=12.5,
+    unit_prices=unit_prices_4,
+)
+write_sales_workbook(
+    r"C:\Users\13521\fox-spring-tea-website\files\sample-data-04.xlsx",
+    "销售数据",
+    headers,
+    rows_4,
+)
+
+# File 5: May data
+skus_5 = ["SKU001", "SKU004", "SKU005"]
+unit_prices_5 = {"SKU001": 170.1, "SKU004": 210.5, "SKU005": 145.8}
+rows_5 = generate_sales_data(
+    datetime(2026, 5, 1), skus_5, platforms,
+    base_visits=130, base_orders=7, base_refund=17.5,
+    unit_prices=unit_prices_5,
+)
+write_sales_workbook(
+    r"C:\Users\13521\fox-spring-tea-website\files\sample-data-05.xlsx",
+    "销售数据",
+    headers,
+    rows_5,
+)
+
+# File 6: June data
+skus_6 = ["SKU002", "SKU003", "SKU006"]
+unit_prices_6 = {"SKU002": 116.1, "SKU003": 2520.0, "SKU006": 3150.0}
+rows_6 = generate_sales_data(
+    datetime(2026, 6, 1), skus_6, platforms,
+    base_visits=140, base_orders=8, base_refund=20.0,
+    unit_prices=unit_prices_6,
+)
+write_sales_workbook(
+    r"C:\Users\13521\fox-spring-tea-website\files\sample-data-06.xlsx",
+    "销售数据",
+    headers,
+    rows_6,
+)
+
 print(f"sample-data-01.xlsx: {len(rows_1)} data rows")
 print(f"sample-data-02.xlsx: {len(rows_2)} data rows")
+print(f"sample-data-03.xlsx: {len(rows_3)} data rows")
+print(f"sample-data-04.xlsx: {len(rows_4)} data rows")
+print(f"sample-data-05.xlsx: {len(rows_5)} data rows")
+print(f"sample-data-06.xlsx: {len(rows_6)} data rows")
 print("Done")

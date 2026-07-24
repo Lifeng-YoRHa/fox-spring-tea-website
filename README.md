@@ -1,6 +1,6 @@
 # Fox Spring Tea 网站
 
-为 `www.fox-spring-tea.xyz` 准备的轻量静态网站，提供 Excel 文件下载。
+为 `www.fox-spring-tea.xyz` 准备的轻量静态网站：提供 Excel 文件下载，另有一个模拟生意参谋的数据后台测试页（`admin.html`）和静态 JSON 数据接口（`api/`），用于配合「景卓腾达数据库MVP」做自动化导出/拉取→入库测试。
 
 ## 本地预览
 
@@ -8,13 +8,24 @@
 
 ```
 fox-spring-tea-website/
-├── index.html
+├── index.html           # 下载列表页（含 admin.html 入口）
+├── admin.html           # 数据后台测试页（演示登录 + SheetJS 导出 .xls）
+├── api/                 # 静态 JSON 数据接口（勿手改，由脚本生成）
 ├── assets/
-│   └── style.css
-└── files/
-    ├── sample-data-01.xlsx
-    └── sample-data-02.xlsx
+│   ├── style.css
+│   └── data-gen.js      # 共享数据生成逻辑
+├── files/
+│   ├── sample-data-01.xlsx
+│   └── sample-data-02.xlsx
+└── scripts/
+    └── generate-api.js  # 重新生成 api/：node scripts/generate-api.js
 ```
+
+## 数据后台与 API（测试用途）
+
+- `admin.html`：演示账号 `admin` / `fox2026`，选择日期后可导出与生意参谋「商品-全部」同结构的 .xls。
+- `api/sales-<YYYY-MM-DD>.json`：与页面同源的每日数据接口，目前覆盖 2026-07-01 ~ 2026-12-31；过期后运行 `node scripts/generate-api.js` 重新生成。
+- 页面数据为伪随机假数据（商品ID 为 9000000000xx 号段），切勿导入生产数据库。
 
 ## 添加新的 Excel 文件
 

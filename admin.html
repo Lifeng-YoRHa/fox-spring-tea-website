@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>数据后台 - Fox Spring Tea（测试站）</title>
+  <link rel="stylesheet" href="assets/style.css">
+  <style>
+    main { max-width: 1100px; }
+    .test-banner {
+      background-color: #fdf0e4;
+      border: 1px solid #e8c79a;
+      border-radius: 8px;
+      padding: 0.75rem 1.25rem;
+      margin-bottom: 1.5rem;
+      color: #8b5a2b;
+      font-size: 0.9rem;
+      text-align: center;
+    }
+    .card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: var(--shadow);
+    }
+    .card h2 {
+      font-size: 1.25rem;
+      margin-bottom: 1rem;
+      color: var(--accent-color);
+    }
+    .form-row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 0.9rem;
+      flex-wrap: wrap;
+    }
+    .form-row label { font-size: 0.95rem; min-width: 4em; }
+    .form-row input {
+      padding: 0.45rem 0.7rem;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      font-size: 0.95rem;
+      font-family: inherit;
+    }
+    .btn {
+      display: inline-block;
+      padding: 0.45rem 1.2rem;
+      border: none;
+      border-radius: 6px;
+      background-color: var(--accent-color);
+      color: #fff;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+    .btn:hover { background-color: var(--accent-hover); }
+    .btn.secondary {
+      background-color: #fff;
+      color: var(--accent-color);
+      border: 1px solid var(--accent-color);
+    }
+    .btn.secondary:hover { background-color: #f4ede2; }
+    .login-error {
+      color: #b3402a;
+      font-size: 0.9rem;
+      min-height: 1.2em;
+    }
+    .login-hint {
+      color: var(--muted-color);
+      font-size: 0.85rem;
+    }
+    .toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+    }
+    .toolbar .left, .toolbar .right {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+    .table-wrap { overflow-x: auto; }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      font-size: 0.85rem;
+      white-space: nowrap;
+    }
+    th, td {
+      border: 1px solid var(--border-color);
+      padding: 0.4rem 0.6rem;
+      text-align: right;
+    }
+    th {
+      background-color: #f4ede2;
+      color: var(--accent-color);
+      font-weight: 600;
+      position: sticky;
+      top: 0;
+    }
+    td.text, th.text { text-align: left; }
+    tbody tr:nth-child(even) { background-color: #faf8f3; }
+  </style>
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+  <script>
+    // CDN 兜底：若 SheetJS 官方 CDN 不可用，改用 cdnjs 的 xlsx 0.18.5
+    if (typeof XLSX === 'undefined') {
+      document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"><\/script>');
+    }
+  </script>
+</head>
+<body>
+  <header>
+    <h1>数据后台</h1>
+    <p class="subtitle">Fox Spring Tea（测试站）· 模拟生意参谋数据</p>
+  </header>
+
+  <main>
+    <div class="test-banner">
+      ⚠️ 这是测试演示站点，页面数据均为程序生成的模拟数据，仅用于内部测试，请勿外传。
+    </div>
+
+    <!-- 登录区 -->
+    <section class="card" id="login-panel">
+      <h2>登录</h2>
+      <form id="login-form">
+        <div class="form-row">
+          <label for="username">账号</label>
+          <input type="text" id="username" autocomplete="username" required>
+        </div>
+        <div class="form-row">
+          <label for="password">密码</label>
+          <input type="password" id="password" autocomplete="current-password" required>
+        </div>
+        <div class="form-row">
+          <button type="submit" class="btn" id="login-btn">登录</button>
+          <span class="login-hint">演示账号：admin / fox2026（这是测试演示站点）</span>
+        </div>
+        <p class="login-error" id="login-error"></p>
+      </form>
+    </section>
+
+    <!-- 数据区 -->
+    <section class="card" id="data-panel" style="display:none;">
+      <div class="toolbar">
+        <div class="left">
+          <label for="stat-date">统计日期</label>
+          <input type="date" id="stat-date" value="2026-07-21">
+          <button type="button" class="btn" id="export-btn">导出 Excel</button>
+        </div>
+        <div class="right">
+          <span class="login-hint">已登录：admin</span>
+          <button type="button" class="btn secondary" id="logout-btn">退出登录</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table id="data-table">
+          <thead></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2026 Fox Spring Tea · 测试演示站点</p>
+  </footer>
+
+  <script>
+    'use strict';
+
+    /* ============ 登录逻辑 ============ */
+    var ADMIN_USER = 'admin';
+    var ADMIN_PASS = 'fox2026';
+    var SESSION_KEY = 'fst_admin_logged_in';
+
+    function isLoggedIn() {
+      return sessionStorage.getItem(SESSION_KEY) === '1';
+    }
+
+    function showPanel() {
+      document.getElementById('login-panel').style.display = isLoggedIn() ? 'none' : '';
+      document.getElementById('data-panel').style.display = isLoggedIn() ? '' : 'none';
+      if (isLoggedIn()) {
+        renderTable();
+      }
+    }
+
+    document.getElementById('login-form').addEventListener('submit', function (e) {
+      e.preventDefault();
+      var u = document.getElementById('username').value.trim();
+      var p = document.getElementById('password').value;
+      if (u === ADMIN_USER && p === ADMIN_PASS) {
+        sessionStorage.setItem(SESSION_KEY, '1');
+        document.getElementById('login-error').textContent = '';
+        showPanel();
+      } else {
+        document.getElementById('login-error').textContent = '账号或密码错误';
+      }
+    });
+
+    document.getElementById('logout-btn').addEventListener('click', function () {
+      sessionStorage.removeItem(SESSION_KEY);
+      showPanel();
+    });
+
+    /* ============ 商品清单（固定 ID / 货号 / 名称） ============ */
+    var PRODUCTS = [
+      { id: '924201024296', sku: 'A1-S短款',       name: 'ZAMST/赞斯特运动护踝轻薄篮球跑步羽毛球稳定踝关节A1-S短款护具' },
+      { id: '923692153852', sku: 'A2-DX',          name: '【球星同款】ZAMST赞斯特篮球排球稳定踝关节硬运动护踝护具A2-DX' },
+      { id: '924188305117', sku: 'A1',             name: 'ZAMST/赞斯特运动护踝篮球足球跑步防扭伤中度支撑护踝A1' },
+      { id: '923710458230', sku: 'A1长款',         name: 'ZAMST赞斯特护踝运动跑步篮球排球防崴脚A1长款护具' },
+      { id: '924300771542', sku: 'EK-3',           name: 'ZAMST/赞斯特运动护膝篮球跑步登山羽毛球髌骨带护膝EK-3' },
+      { id: '923805664291', sku: 'EK-5',           name: 'ZAMST赞斯特护膝运动篮球跑步专业半月板韧带护膝EK-5' },
+      { id: '924112908375', sku: 'ZK-7',           name: 'ZAMST/赞斯特专业运动护膝篮球排球滑雪强支撑护膝ZK-7' },
+      { id: '923977120846', sku: 'ZK-3',           name: 'ZAMST赞斯特护膝轻薄透气跑步健身羽毛球运动护膝ZK-3' },
+      { id: '924256831009', sku: 'Wrist Wrap',     name: 'ZAMST/赞斯特运动护腕篮球羽毛球网球扭伤防护护腕' },
+      { id: '923688441572', sku: 'Filmista护踝',   name: 'ZAMST赞斯特Filmista飞斯特轻薄运动护踝足球跑步护具' },
+      { id: '924309882164', sku: 'Bodymate护腰',   name: 'ZAMST/赞斯特Bodymate运动护腰健身篮球跑步腰部支撑护具' },
+      { id: '923744509813', sku: 'AT-1',           name: 'ZAMST赞斯特跟腱护具运动跑步篮球跟腱保护护具AT-1' },
+      { id: '924188027736', sku: 'IK-1',           name: 'ZAMST/赞斯特运动护膝跑步骑行健身轻薄透气护膝IK-1' },
+      { id: '923910665482', sku: 'SK-3',           name: 'ZAMST赞斯特护肩运动篮球排球羽毛球肩部支撑护具SK-3' },
+      { id: '924077319825', sku: 'Elbow Sleeve',   name: 'ZAMST/赞斯特运动护肘篮球网球羽毛球手臂加压护肘' }
+    ];
+
+    /* 表头：必需列 + 参照真实文件补充的无关列（主商品ID/商品类型/商品状态/商品标签） */
+    var HEADERS = [
+      '统计日期', '商品ID', '商品名称', '主商品ID', '商品类型', '货号', '商品状态', '商品标签',
+      '商品访客数', '商品浏览量', '平均停留时长', '商品收藏人数', '商品加购件数', '商品加购人数',
+      '支付买家数', '支付件数', '支付金额', '商品支付转化率', '支付老买家数', '老买家支付金额', '成功退款金额'
+    ];
+    /* 文本列（左对齐，导出为字符串），其余为数值列 */
+    var TEXT_COLS = { '统计日期': 1, '商品ID': 1, '商品名称': 1, '主商品ID': 1, '商品类型': 1, '货号': 1, '商品状态': 1, '商品标签': 1, '商品支付转化率': 1 };
+
+    /* ============ 确定性伪随机数（hash + LCG） ============ */
+    function hashSeed(str) {
+      var h = 2166136261 >>> 0;
+      for (var i = 0; i < str.length; i++) {
+        h ^= str.charCodeAt(i);
+        h = Math.imul(h, 16777619) >>> 0;
+      }
+      return h >>> 0;
+    }
+
+    function makeRng(seed) {
+      var state = seed >>> 0;
+      return function () {
+        state = (Math.imul(state, 1664525) + 1013904223) >>> 0;
+        return state / 4294967296;
+      };
+    }
+
+    function randInt(rng, min, max) {
+      return min + Math.floor(rng() * (max - min + 1));
+    }
+
+    function fmtInt(n) {
+      return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    }
+
+    function fmtMoney(n) {
+      var parts = n.toFixed(2).split('.');
+      parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      return parts.join('.');
+    }
+
+    /* ============ 数据生成：同一 商品ID+日期 结果恒定 ============ */
+    function buildRows(dateStr) {
+      var rows = [];
+      for (var i = 0; i < PRODUCTS.length; i++) {
+        var p = PRODUCTS[i];
+        var rng = makeRng(hashSeed(p.id + '|' + dateStr));
+
+        var visitors = randInt(rng, 200, 1500);
+        var views = Math.round(visitors * (1.8 + rng() * 1.4));
+        var staySec = 8 + rng() * 12;                    // 平均停留时长（秒）
+        var favs = randInt(rng, 0, 30);                  // 收藏人数
+        var cartItems = randInt(rng, 10, Math.max(10, Math.round(visitors * 0.15)));
+        var cartBuyers = Math.max(1, Math.round(cartItems * (0.6 + rng() * 0.2)));
+        var payBuyers = randInt(rng, 1, Math.max(1, Math.round(cartBuyers * 0.6)));
+        var payItems = payBuyers + randInt(rng, 0, Math.max(1, Math.round(payBuyers * 0.3)));
+        var unitPrice = 249 + randInt(rng, 0, 200);
+        var payAmount = payItems * unitPrice;
+        var convRate = (payBuyers / visitors * 100);
+        var oldBuyers = randInt(rng, 0, payBuyers);
+        var oldAmount = oldBuyers > 0 ? Math.round(payAmount * (0.05 + rng() * 0.2) * 100) / 100 : 0;
+        var refund = Math.round(payAmount * rng() * 0.2 * 100) / 100;
+
+        rows.push([
+          dateStr,                       // 统计日期
+          p.id,                          // 商品ID
+          p.name,                        // 商品名称
+          p.id,                          // 主商品ID
+          '主商品',                       // 商品类型
+          p.sku,                         // 货号
+          '当前在线',                     // 商品状态
+          '-',                           // 商品标签
+          fmtInt(visitors),              // 商品访客数
+          fmtInt(views),                 // 商品浏览量
+          Math.round(staySec * 100) / 100, // 平均停留时长（数值）
+          fmtInt(favs),                  // 商品收藏人数
+          fmtInt(cartItems),             // 商品加购件数
+          fmtInt(cartBuyers),            // 商品加购人数
+          fmtInt(payBuyers),             // 支付买家数
+          fmtInt(payItems),              // 支付件数
+          fmtMoney(payAmount),           // 支付金额
+          convRate.toFixed(2) + '%',     // 商品支付转化率
+          fmtInt(oldBuyers),             // 支付老买家数
+          fmtMoney(oldAmount),           // 老买家支付金额
+          fmtMoney(refund)               // 成功退款金额
+        ]);
+      }
+      return rows;
+    }
+
+    function getDateStr() {
+      var v = document.getElementById('stat-date').value;
+      return v || '2026-07-21';
+    }
+
+    /* ============ 表格渲染 ============ */
+    function renderTable() {
+      var table = document.getElementById('data-table');
+      var thead = table.querySelector('thead');
+      var tbody = table.querySelector('tbody');
+      thead.innerHTML = '';
+      tbody.innerHTML = '';
+
+      var hr = document.createElement('tr');
+      HEADERS.forEach(function (h) {
+        var th = document.createElement('th');
+        th.textContent = h;
+        if (TEXT_COLS[h]) { th.className = 'text'; }
+        hr.appendChild(th);
+      });
+      thead.appendChild(hr);
+
+      buildRows(getDateStr()).forEach(function (row) {
+        var tr = document.createElement('tr');
+        row.forEach(function (cell, idx) {
+          var td = document.createElement('td');
+          td.textContent = cell;
+          if (TEXT_COLS[HEADERS[idx]]) { td.className = 'text'; }
+          tr.appendChild(td);
+        });
+        tbody.appendChild(tr);
+      });
+    }
+
+    document.getElementById('stat-date').addEventListener('change', renderTable);
+
+    /* ============ 导出 Excel（真二进制 .xls / biff8） ============ */
+    document.getElementById('export-btn').addEventListener('click', function () {
+      if (typeof XLSX === 'undefined') {
+        alert('SheetJS 库加载失败，请检查网络后刷新页面重试。');
+        return;
+      }
+      var dateStr = getDateStr();
+      // aoa 结构：前 4 行空行，第 5 行表头，第 6 行起数据（与真实生意参谋导出一致）
+      var aoa = [[], [], [], []];
+      aoa.push(HEADERS.slice());
+      buildRows(dateStr).forEach(function (row) { aoa.push(row.slice()); });
+
+      var ws = XLSX.utils.aoa_to_sheet(aoa);
+      var wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, '商品-全部');
+      var out = XLSX.write(wb, { bookType: 'biff8', type: 'array' });
+      var blob = new Blob([out], { type: 'application/vnd.ms-excel' });
+
+      var fileName = '【生意参谋平台】商品_全部_' + dateStr + '_' + dateStr + '.xls';
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
+    });
+
+    /* ============ 初始化 ============ */
+    showPanel();
+  </script>
+</body>
+</html>

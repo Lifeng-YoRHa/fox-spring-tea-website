@@ -9,7 +9,8 @@
 fox-spring-tea-website/
 ├── .gitignore         # 忽略 OS/编辑器生成的文件
 ├── CLAUDE.md          # 本文件：项目约定
-├── index.html         # 唯一页面
+├── index.html         # 下载列表页（含 admin.html 入口链接）
+├── admin.html         # 模拟生意参谋数据后台（测试站）：登录 + 日期选择 + SheetJS 导出 .xls
 ├── README.md          # 部署说明
 ├── assets/            # 样式、图片、图标
 │   └── style.css
@@ -22,6 +23,13 @@ fox-spring-tea-website/
     ├── populate-sales-data.py
     └── verify-links.py
 ```
+
+## admin.html 说明
+
+- 用途：配合「景卓腾达数据库MVP」的 `scripts/auto_export_import.py` 做自动化导出→入库测试。
+- 登录账密写死在前端（admin / fox2026），仅作演示，不是真实安全机制。
+- 导出的 .xls 为 SheetJS biff8 真二进制格式，前 4 行空、第 5 行表头，结构与生意参谋「商品-全部」导出一致。
+- 页面数据由「商品ID+日期」伪随机生成；**其中 2 个商品ID 与真实生意参谋数据重叠**，切勿把该站数据导入生产数据库。
 
 ## 命名规则
 

@@ -13,7 +13,10 @@ fox-spring-tea-website/
 ├── admin.html         # 模拟生意参谋数据后台（测试站）：登录 + 日期选择 + SheetJS 导出 .xls
 ├── README.md          # 部署说明
 ├── assets/            # 样式、图片、图标
-│   └── style.css
+│   ├── style.css
+│   └── data-gen.js    # 共享数据生成逻辑（admin.html 与 generate-api.js 共用，浏览器/node 双环境）
+├── api/               # 静态 JSON 数据接口（由 scripts/generate-api.js 预生成，勿手改）
+│   └── sales-YYYY-MM-DD.json
 ├── files/             # Excel 文件仓库
 │   ├── sample-data-01.xlsx
 │   └── sample-data-02.xlsx
@@ -21,7 +24,8 @@ fox-spring-tea-website/
     ├── create-samples.py
     ├── inspect-reference.py
     ├── populate-sales-data.py
-    └── verify-links.py
+    ├── verify-links.py
+    └── generate-api.js  # 生成 api/ 下的每日 JSON：node scripts/generate-api.js
 ```
 
 ## admin.html 说明
@@ -30,6 +34,12 @@ fox-spring-tea-website/
 - 登录账密写死在前端（admin / fox2026），仅作演示，不是真实安全机制。
 - 导出的 .xls 为 SheetJS biff8 真二进制格式，前 4 行空、第 5 行表头，结构与生意参谋「商品-全部」导出一致。
 - 页面数据由「商品ID+日期」伪随机生成；商品ID 使用 9000000000xx 号段，与真实数据不会冲突。切勿把该站数据导入生产数据库。
+- 数据生成逻辑（商品列表 / hash+LCG / buildRows）在 `assets/data-gen.js`，浏览器与 node 共用；改动它会影响页面和 api/ 两边，需同步重新生成 api/。
+
+## api/ 静态数据接口说明
+
+- `api/sales-<YYYY-MM-DD>.json` 由 `node scripts/generate-api.js` 预生成，数值与 admin.html 页面表格 / 导出的 xls 完全一致（同一 buildRows 来源）。
+- 目前覆盖 2026-07-01 ~ 2026-12-31，共 184 天；过期后需重新运行 `node scripts/generate-api.js` 生成。
 
 ## 命名规则
 
